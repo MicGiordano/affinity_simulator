@@ -541,9 +541,9 @@ def score_state(state: PlanningState) -> float:
         score += 4.0 + max(0, lands - 4) * 1.0
     score += min(lands_in_hand, max(0, 4 - lands)) * 3.5
 
-    score += artifacts * 10.0
+    score += artifacts * 20.0
     score += nonland_fodder * 1.5
-
+    """
     bridge_count = sum(1 for p in state.battlefield if _is_bridge(p.spec))
 
     if lands == 1:
@@ -554,12 +554,12 @@ def score_state(state: PlanningState) -> float:
     # Small penalty if we are still in the first 2 land drops and no bridge is present
     if lands <= 2 and bridge_count == 0:
         score -= 5.0
-
+    """
     for card in state.hand:
         if card.is_land:
             continue
         if card.name == "Galvanic Blast":
-            score -= 50.0
+            score -= 1.0
             continue
         if card.is_creature:
             eff = effective_total_cost(card, state.battlefield)
@@ -571,13 +571,13 @@ def score_state(state: PlanningState) -> float:
 
     for permanent in state.battlefield:
         if permanent.spec.name in {"Blood Token", "Clue Token", "Hero Token"}:
-            score += 15.0
+            score += 5.0
         if permanent.spec.name in {"Ichor Wellspring", "Cryogen Relic"}:
             score += 4.0
         if permanent.spec.name == "Krark-Clan Shaman":
             score += 1.0
         elif permanent.spec.is_creature:
-            score += 1.5
+            score += 15
 
     shaman_count = _shaman_count(state)
     if shaman_count >= 2:
@@ -601,19 +601,20 @@ def score_state(state: PlanningState) -> float:
                 score += 2.0
 
         if last.get("sacrificed") in {"Clue Token", "Map Token", "Ichor Wellspring", "Cryogen Relic"}:
-            score += 3.0
+            score += 60.0
+
+        if last.get("sacrificed") in {"Clue Token"}:
+            score +=40
 
         if last.get("sacrificed") == "Blood Token":
-            score += 3.0
             if lands <= 3:
-                score -= 80.0
+                score -= 100.0
+            else:
+                score += 20.0
 
         if last.get("sacrificed") and (
             "Bridge" in last["sacrificed"]
             or last["sacrificed"] in {
-                "Swamp",
-                "Island",
-                "Mountain",
                 "Vault of Whispers",
                 "Seat of the Synod",
                 "Great Furnace",
@@ -632,11 +633,11 @@ def score_state(state: PlanningState) -> float:
                 "Great Furnace",
             } or "Bridge" in discarded:
                 if lands_in_hand <= 1:
-                    score -= 15.0
+                    score -= 40.0
                 else:
                     score += 1.0
             if discarded in {"Galvanic Blast", "Makeshift Munitions"}:
-                score -= 50.0
+                score -= 500.0
 
         # Search may use an expected draw value instead of revealing exact future cards.
         if "expected_draw_value" in last:
@@ -649,7 +650,7 @@ def score_state(state: PlanningState) -> float:
             score += 2.0
 
         if last.get("shaman_redundant_cast"):
-            score -= 10.0
+            score -= 20.0
 
     if lands >= 2 and lands_in_hand > 0:
         score += min(lands_in_hand, 2) * 1.5

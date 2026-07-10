@@ -25,10 +25,10 @@ except ImportError:
 # CONFIG
 # ----------------------------------------------------------
 
-N_GAMES = 750
+N_GAMES = 50
 NUM_TURNS = 5
 SEED_START = 42
-DEPTH = 4
+DEPTH = 5
 
 TOTAL_LANDS = 19
 MAX_NONBASIC_COPIES = 4
@@ -36,8 +36,8 @@ LIMIT_CONFIGS: int | None = None  # set to a small number for quick testing
 
 # Conservative pruning hooks.
 REQUIRE_ALL_THREE_COLORS = True
-TOP_K_INCREMENTAL = 20
-TOP_K_FINAL = 25
+TOP_K_INCREMENTAL = 0
+TOP_K_FINAL = 0
 
 OUTPUT_ROOT = "simulation_outputs"
 SEARCH_RUN_NAME = "manabase_search"
@@ -172,6 +172,7 @@ def _one_basic_replacements(base_config: Counter):
     for land_name, current_count in list(base_config.items()):
         if current_count <= 0:
             continue
+
         for basic_name in REPLACEMENT_BASICS.get(land_name, ()):  # mono-color replacements only
             variant = Counter(base_config)
             variant[land_name] -= 1
@@ -214,12 +215,12 @@ def generate_manabase_configs(
         if _config_makes_sense(artifact_cfg):
             key = tuple(sorted((k, v) for k, v in artifact_cfg.items() if v > 0))
             unique[key] = Counter(artifact_cfg)
-
+        """
         for variant in _one_basic_replacements(artifact_cfg):
             if _config_makes_sense(variant):
                 vkey = tuple(sorted((k, v) for k, v in variant.items() if v > 0))
                 unique[vkey] = Counter(variant)
-
+        """
     configs = [unique[k] for k in sorted(unique)]
     if limit_configs is not None:
         configs = configs[:limit_configs]
@@ -237,10 +238,11 @@ def count_search_space(
     for cfg in artifact_only:
         if _config_makes_sense(cfg):
             unique_total[tuple(sorted(cfg.items()))] = cfg
+        """
         for variant in _one_basic_replacements(cfg):
             if _config_makes_sense(variant):
                 unique_total[tuple(sorted(variant.items()))] = variant
-
+        """
     return {
         "artifact_only_raw": len(artifact_only),
         "artifact_only_after_pruning": len(artifact_only_pruned),

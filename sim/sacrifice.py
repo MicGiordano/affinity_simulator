@@ -17,8 +17,8 @@ def choose_sacrifice(
     if not permanents:
         return None
 
-    lands = [p for p in permanents if p.spec.is_land]
-    non_land_candidates = [p for p in permanents if not p.spec.is_land]
+    lands = [p for p in permanents if (p.spec.is_land and p.spec.is_artifact)]
+    non_land_candidates = [p for p in permanents if ((p.spec.is_artifact or p.spec.is_creature) and not p.spec.is_land)]
 
     def band(p: Permanent) -> tuple[int, int, str]:
         if p.spec.ltb_draw_cards > 0:

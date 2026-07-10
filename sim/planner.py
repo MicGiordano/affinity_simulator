@@ -550,16 +550,16 @@ def score_state(state: PlanningState) -> float:
     # ------------------------------------------------------------------
     # Strong early incentive for bridges (tapped artifact lands)
     # ------------------------------------------------------------------
-    bridge_count = sum(1 for p in state.battlefield if _is_bridge(p.spec))
+    #bridge_count = sum(1 for p in state.battlefield if _is_bridge(p.spec))
 
-    if lands == 1:
-        score += bridge_count * 50.0
-    elif lands == 2:
-        score += bridge_count * 40.0
+    #if lands == 1:
+    #    score += bridge_count * 50.0
+    #elif lands == 2:
+    #    score += bridge_count * 40.0
 
     # Small penalty if we are still in the first 2 land drops and no bridge is present
-    if lands <= 2 and bridge_count == 0:
-        score -= 5.0
+    #if lands <= 2 and bridge_count == 0:
+    #    score -= 5.0
 
     # ------------------------------------------------------------------
     # Hand priorities
