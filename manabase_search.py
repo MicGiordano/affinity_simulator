@@ -1,3 +1,6 @@
+
+# Code for optimal manabase search. Set parameters below and then run the file
+
 from __future__ import annotations
 
 from collections import Counter
