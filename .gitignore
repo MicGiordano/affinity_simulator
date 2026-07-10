@@ -1,4 +1,9 @@
-# Ignore simulation outputs
-simulation outputs/
+# PyCharm files
+.idea/
 
-.venv
+# Python cache files
+__pycache__/
+*.pyc
+
+# Simulation output files
+simulation_outputs/
