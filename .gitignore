@@ -1,0 +1,4 @@
+# Ignore simulation outputs
+simulation outputs/
+
+.venv

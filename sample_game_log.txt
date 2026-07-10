@@ -1,0 +1,181 @@
+========================================================================
+GAME 1 | seed=1 | on_the_play=True
+========================================================================
+Opening hand: "Myr Enforcer", "Vault of Whispers", "Mistvault Bridge", "Galvanic Blast", "Blood Fountain", "Drossforge Bridge", "Krark-Clan Shaman"
+Mulligan: no (0)
+  Attempt 0: KEEP
+    seven: "Myr Enforcer", "Vault of Whispers", "Mistvault Bridge", "Galvanic Blast", "Blood Fountain", "Drossforge Bridge", "Krark-Clan Shaman"
+    post-bottom: "Myr Enforcer", "Vault of Whispers", "Mistvault Bridge", "Galvanic Blast", "Blood Fountain", "Drossforge Bridge", "Krark-Clan Shaman"
+Kept hand: "Myr Enforcer", "Vault of Whispers", "Mistvault Bridge", "Galvanic Blast", "Blood Fountain", "Drossforge Bridge", "Krark-Clan Shaman"
+Failed mulligan: False
+
+T1
+------------------------------------------------------------------------
+Draw step: no draw
+Hand at start: "Myr Enforcer", "Vault of Whispers", "Mistvault Bridge", "Galvanic Blast", "Blood Fountain", "Drossforge Bridge", "Krark-Clan Shaman"
+Battlefield at start: (empty)
+Actions / planner choices:
+  1. play Vault of Whispers [score=-96.609]
+     planned line: play Vault of Whispers -> cast Blood Fountain
+     score breakdown: total=-52.00
+     mana payment: (none)
+     colors produced: (none)
+     total mana spent: 0 | effective cost: 0
+     cards drawn: (none)
+  2. cast Blood Fountain [score=-56.640]
+     planned line: cast Blood Fountain
+     score breakdown: total=-44.50
+     mana payment: "Vault of Whispers"
+     colors produced: "B"
+     total mana spent: 1 | effective cost: 1
+     created token (planned): Blood Token
+     cards drawn: (none)
+Hand at end: "Myr Enforcer", "Mistvault Bridge", "Galvanic Blast", "Drossforge Bridge", "Krark-Clan Shaman"
+Battlefield at end: Vault of Whispers tapped, Blood Fountain, Blood Token
+Graveyard at end: (none)
+End-of-turn metrics:
+  - land_development_strength: 1.0000
+  - available_colors_capped: 0.3333
+  - artifact_count: 3.0000
+  - nonland_sacrificable_fodder: 2.0000
+  - low_mana_waste: 1.0000
+  - land_drop_on_curve: 1.0000
+  - priority_color_access: 0.0000
+  - low_tempo_loss: 0.0000
+  - low_mana_screw: 1.0000
+  - low_mana_flood: 1.0000
+  - low_failed_mulligans: 1.0000
+  - board_presence: 0.0000
+
+T2
+------------------------------------------------------------------------
+Draw step: "Silverbluff Bridge"
+Hand at start: "Myr Enforcer", "Mistvault Bridge", "Galvanic Blast", "Drossforge Bridge", "Krark-Clan Shaman", "Silverbluff Bridge"
+Battlefield at start: Vault of Whispers tapped, Blood Fountain, Blood Token
+Actions / planner choices:
+  1. play Mistvault Bridge [score=-69.926]
+     planned line: play Mistvault Bridge -> activate Blood Token
+     score breakdown: total=-29.50
+     mana payment: (none)
+     colors produced: (none)
+     total mana spent: 0 | effective cost: 0
+     cards drawn: (none)
+  2. activate Blood Token [score=-49.920]
+     planned line: activate Blood Token
+     score breakdown: total=-24.00
+     mana payment: "Vault of Whispers"
+     colors produced: "B"
+     total mana spent: 1 | effective cost: 1
+     sacrificed: Blood Token
+     cards drawn: "Thoughtcast"
+Hand at end: "Myr Enforcer", "Galvanic Blast", "Drossforge Bridge", "Krark-Clan Shaman", "Silverbluff Bridge", "Thoughtcast"
+Battlefield at end: Vault of Whispers tapped, Blood Fountain, Mistvault Bridge
+Graveyard at end: "Blood Token"
+End-of-turn metrics:
+  - land_development_strength: 1.0000
+  - available_colors_capped: 0.6667
+  - artifact_count: 3.0000
+  - nonland_sacrificable_fodder: 1.0000
+  - low_mana_waste: 0.5000
+  - land_drop_on_curve: 1.0000
+  - priority_color_access: 0.0000
+  - low_tempo_loss: 1.0000
+  - low_mana_screw: 1.0000
+  - low_mana_flood: 0.0000
+  - low_failed_mulligans: 1.0000
+  - board_presence: 0.0000
+
+T3
+------------------------------------------------------------------------
+Draw step: "Mistvault Bridge"
+Hand at start: "Myr Enforcer", "Galvanic Blast", "Drossforge Bridge", "Krark-Clan Shaman", "Silverbluff Bridge", "Thoughtcast", "Mistvault Bridge"
+Battlefield at start: Vault of Whispers tapped, Blood Fountain, Mistvault Bridge
+Actions / planner choices:
+  1. play Drossforge Bridge [score=-11.907]
+     planned line: play Drossforge Bridge -> cast Krark-Clan Shaman -> cast Myr Enforcer
+     score breakdown: total=-10.00
+     mana payment: (none)
+     colors produced: (none)
+     total mana spent: 0 | effective cost: 0
+     cards drawn: (none)
+  2. cast Krark-Clan Shaman [score=-15.228]
+     planned line: cast Krark-Clan Shaman -> cast Myr Enforcer -> cast Thoughtcast
+     score breakdown: total=-9.50
+     mana payment: "Drossforge Bridge"
+     colors produced: "B/R"
+     total mana spent: 1 | effective cost: 1
+     cards drawn: (none)
+  3. cast Myr Enforcer [score=-12.748]
+     planned line: cast Myr Enforcer -> cast Thoughtcast
+     score breakdown: total=-3.50
+     mana payment: "Vault of Whispers", "Mistvault Bridge"
+     colors produced: "B", "U/B"
+     total mana spent: 2 | effective cost: 2
+     cards drawn: (none)
+  4. cast Thoughtcast [score=-14.400]
+     planned line: cast Thoughtcast
+     score breakdown: total=0.50
+     mana payment: (none)
+     colors produced: (none)
+     total mana spent: 0 | effective cost: 0
+     cards drawn: "Vault of Whispers", "Myr Enforcer"
+Hand at end: "Galvanic Blast", "Silverbluff Bridge", "Mistvault Bridge", "Vault of Whispers", "Myr Enforcer"
+Battlefield at end: Vault of Whispers tapped, Blood Fountain, Mistvault Bridge tapped, Drossforge Bridge tapped, Krark-Clan Shaman, Myr Enforcer
+Graveyard at end: "Blood Token", "Thoughtcast"
+End-of-turn metrics:
+  - land_development_strength: 1.0000
+  - available_colors_capped: 1.0000
+  - artifact_count: 6.0000
+  - nonland_sacrificable_fodder: 2.0000
+  - low_mana_waste: 1.0000
+  - land_drop_on_curve: 1.0000
+  - priority_color_access: 0.0000
+  - low_tempo_loss: 0.3333
+  - low_mana_screw: 1.0000
+  - low_mana_flood: 1.0000
+  - low_failed_mulligans: 1.0000
+  - board_presence: 0.2500
+
+T4
+------------------------------------------------------------------------
+Draw step: "Krark-Clan Shaman"
+Hand at start: "Galvanic Blast", "Silverbluff Bridge", "Mistvault Bridge", "Vault of Whispers", "Myr Enforcer", "Krark-Clan Shaman"
+Battlefield at start: Vault of Whispers tapped, Blood Fountain, Mistvault Bridge tapped, Drossforge Bridge tapped, Krark-Clan Shaman, Myr Enforcer
+Actions / planner choices:
+  1. play Silverbluff Bridge [score=-11.680]
+     planned line: play Silverbluff Bridge -> cast Myr Enforcer -> cast Krark-Clan Shaman
+     score breakdown: total=-7.50
+     mana payment: (none)
+     colors produced: (none)
+     total mana spent: 0 | effective cost: 0
+     cards drawn: (none)
+  2. cast Myr Enforcer [score=-4.000]
+     planned line: cast Myr Enforcer -> cast Krark-Clan Shaman
+     score breakdown: total=-8.00
+     mana payment: (none)
+     colors produced: (none)
+     total mana spent: 0 | effective cost: 0
+     cards drawn: (none)
+  3. cast Krark-Clan Shaman [score=0.000]
+     planned line: cast Krark-Clan Shaman
+     score breakdown: total=-4.00
+     mana payment: "Drossforge Bridge"
+     colors produced: "B/R"
+     total mana spent: 1 | effective cost: 1
+     cards drawn: (none)
+Hand at end: "Galvanic Blast", "Mistvault Bridge", "Vault of Whispers"
+Battlefield at end: Vault of Whispers, Blood Fountain, Mistvault Bridge, Drossforge Bridge tapped, Krark-Clan Shaman, Myr Enforcer, Silverbluff Bridge, Myr Enforcer, Krark-Clan Shaman
+Graveyard at end: "Blood Token", "Thoughtcast"
+End-of-turn metrics:
+  - land_development_strength: 1.0000
+  - available_colors_capped: 1.0000
+  - artifact_count: 9.0000
+  - nonland_sacrificable_fodder: 3.0000
+  - low_mana_waste: 0.2500
+  - land_drop_on_curve: 1.0000
+  - priority_color_access: 1.0000
+  - low_tempo_loss: 0.5000
+  - low_mana_screw: 1.0000
+  - low_mana_flood: 0.0000
+  - low_failed_mulligans: 1.0000
+  - board_presence: 0.5000
