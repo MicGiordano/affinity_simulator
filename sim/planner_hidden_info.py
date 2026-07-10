@@ -11,6 +11,7 @@ from .mana import (
     choose_lands_for_payment,
     effective_total_cost,
     tap_payment_lands,
+    projected_colors_after_land_drops
 )
 from .models import Permanent
 from .sacrifice import choose_sacrifice
@@ -528,7 +529,7 @@ def apply_action(state: PlanningState, action: Action) -> PlanningState:
 # SCORING
 # ----------------------------------------------------------
 
-def score_state(state: PlanningState) -> float:
+def score_state_old(state: PlanningState) -> float:
     score = 0.0
 
     lands = _land_count(state)
@@ -600,7 +601,7 @@ def score_state(state: PlanningState) -> float:
             elif last.get("land_was_needed_immediately"):
                 score += 2.0
 
-        if last.get("sacrificed") in {"Clue Token", "Map Token", "Ichor Wellspring", "Cryogen Relic"}:
+        if last.get("sacrificed") in {"Map Token", "Ichor Wellspring", "Cryogen Relic"}:
             score += 60.0
 
         if last.get("sacrificed") in {"Clue Token"}:
@@ -654,5 +655,280 @@ def score_state(state: PlanningState) -> float:
 
     if lands >= 2 and lands_in_hand > 0:
         score += min(lands_in_hand, 2) * 1.5
+
+    return score
+
+def score_state(state: PlanningState) -> float:
+    score = 0.0
+
+    turn = len(state.history)
+
+    lands = _land_count(state)
+
+    lands_in_hand = sum(
+        1 for c in state.hand
+        if c.is_land
+    )
+
+    artifacts = sum(
+        1 for p in state.battlefield
+        if p.spec.is_artifact
+    )
+
+    artifact_creatures = sum(
+        1 for p in state.battlefield
+        if p.spec.is_artifact and p.spec.is_creature
+    )
+
+    creatures = sum(
+        1 for p in state.battlefield
+        if p.spec.is_creature
+    )
+
+    fodder = sum(
+        1 for p in state.battlefield
+        if p.spec.sac_fodder
+    )
+
+
+    # ==================================================
+    # LAND DEVELOPMENT
+    # Goal: naturally hit 4 lands by turn 5
+    # ==================================================
+
+    expected_lands = min(turn, 4)
+
+    if lands >= expected_lands:
+        score += 25.0
+    else:
+        score -= (expected_lands - lands) * 25.0
+
+    # Flooding is not useful in the first five turns
+    if lands > 4:
+        score -= (lands - 4) * 4.0
+
+    # Keep future land drops available
+    missing_lands = max(0, 4 - lands)
+
+    score += min(
+        lands_in_hand,
+        missing_lands
+    ) * 6.0
+
+
+    # ==================================================
+    # COLOR DEVELOPMENT
+    # Do not care which lands, only mana access
+    # ==================================================
+
+    current_colors = set()
+
+    for permanent in state.battlefield:
+        if permanent.spec.is_land:
+            current_colors.update(
+                permanent.spec.land_colors
+            )
+
+
+    projected_colors = projected_colors_after_land_drops(
+        state.battlefield,
+        [
+            c for c in state.hand
+            if c.is_land
+        ],
+        max(0, 5 - turn),
+    )
+
+
+    score += len(current_colors) * 8.0
+
+    if {"U", "B", "R"}.issubset(current_colors):
+        score += 35.0
+
+    elif {"U", "B", "R"}.issubset(projected_colors):
+        score += 20.0
+
+
+    # ==================================================
+    # ARTIFACT ENGINE
+    # Highest priority
+    # ==================================================
+
+    # Early artifacts are more valuable
+    if artifacts < 5:
+        score += artifacts * 22.0
+    else:
+        score += artifacts * 15.0
+
+
+    # Affinity breakpoints
+    if artifacts >= 5:
+        score += 20.0
+
+    if artifacts >= 7:
+        score += 25.0
+
+
+    # ==================================================
+    # BOARD PRESENCE
+    # ==================================================
+
+    score += artifact_creatures * 14.0
+
+    score += (
+        max(0, creatures - artifact_creatures)
+        * 5.0
+    )
+
+    # Blood/Clue/Map/etc. are useful as artifacts
+    score += fodder * 3.0
+
+
+    # ==================================================
+    # HAND QUALITY
+    # ==================================================
+
+    for card in state.hand:
+
+        if card.is_land:
+            continue
+
+
+        # Protect actual win conditions/reach
+        if card.name in {
+            "Galvanic Blast",
+            "Makeshift Munitions",
+        }:
+            score += 4.0
+            continue
+
+
+        # Cheap Affinity creatures are premium
+        if card.is_creature:
+
+            cost = effective_total_cost(
+                card,
+                state.battlefield
+            )
+
+            if cost == 0:
+                score += 10.0
+
+            elif cost <= 2:
+                score += 6.0
+
+            elif cost >= 4:
+                score -= 3.0
+
+
+        score += _draw_priority_bonus(card)
+
+
+    # ==================================================
+    # DRAW ENGINES
+    # ==================================================
+
+    for permanent in state.battlefield:
+
+        name = permanent.spec.name
+
+        if name in {
+            "Ichor Wellspring",
+            "Cryogen Relic",
+        }:
+            score += 8.0
+
+        elif name in {
+            "Blood Token",
+            "Clue Token",
+            "Map Token",
+            "Hero Token",
+        }:
+
+            # These are artifacts first.
+            # Their draw ability matters later.
+            if artifacts < 5:
+                score += 10.0
+            else:
+                score += 5.0
+
+
+    # ==================================================
+    # SACRIFICE CONSEQUENCES
+    # Stop greedy Blood sacrifices
+    # ==================================================
+
+    if state.history:
+
+        last = state.history[-1]
+
+        sacrificed = last.get("sacrificed")
+
+        if sacrificed:
+
+            # Sacrifice of a draw artifact is fine
+            if sacrificed in {
+                "Ichor Wellspring",
+                "Cryogen Relic",
+            }:
+                score += 5.0
+
+
+            # Blood is usually an artifact, not a card draw spell
+            elif sacrificed == "Blood Token":
+
+                if artifacts < 5:
+                    score -= 20.0
+
+                elif turn <= 3:
+                    score -= 10.0
+
+
+            # Do not encourage sacrificing mana artifacts
+            elif (
+                "Bridge" in sacrificed
+                or sacrificed in {
+                    "Vault of Whispers",
+                    "Seat of the Synod",
+                    "Great Furnace",
+                }
+            ):
+                score -= 40.0
+
+
+        # Actual draw value
+        if "expected_draw_value" in last:
+            score += float(
+                last.get("expected_draw_value", 0)
+            )
+
+        else:
+            score += (
+                last.get("draw_count", 0)
+                * 5.0
+            )
+
+
+        # Bad discard choices
+        discarded = last.get("discarded")
+
+        if discarded in {
+            "Galvanic Blast",
+            "Makeshift Munitions",
+        }:
+            score -= 50.0
+
+
+    # ==================================================
+    # Redundant Shamans
+    # ==================================================
+
+    shamans = _shaman_count(state)
+
+    if shamans > 1:
+        score -= (
+            shamans - 1
+        ) * 10.0
+
 
     return score
